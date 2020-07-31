@@ -16,8 +16,7 @@ if (!dir || !fs.lstatSync(dir).isDirectory()) {
   throw new Error('Directory not found');
 }
 if (!fs.lstatSync(path.join(dir, '.git')).isDirectory()) {
-  child_process('cd ' + dir);
-  child_process('git clone ' + git);
+  child_process('cd ' + dir + '; git clone ' + git);
 //   throw new Error('Directory must be a Git repo');
 }
 dir = path.resolve(__dirname, dir);
