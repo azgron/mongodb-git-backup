@@ -8,7 +8,7 @@ const child_process = require('child_process');
 const readdir = require('recursive-readdir');
 const Q = require('q');
 
-let dir = yargs.argv.dir;
+let dir = yargs.argv.dir || process.env.dir;
 if (!dir || !fs.lstatSync(dir).isDirectory()) {
   throw new Error('Directory not found');
 }
@@ -18,7 +18,7 @@ if (!fs.lstatSync(path.join(dir, '.git')).isDirectory()) {
 dir = path.resolve(__dirname, dir);
 log('Backing up MongoDB to directory:', dir);
 
-const uri = yargs.argv.uri;
+const uri = yargs.argv.uri || process.env.uri;
 if (!uri) {
   throw new Error('No MongoDB URI provided');
 }
@@ -28,15 +28,18 @@ console.log(`Parsed URI: ${JSON.stringify(uriInfo)}`);
 let runDf;
 
 // Allow running the processs immediately without scheduling.
-if (yargs.argv.now != null) {
+let now = process.env.now || yargs.argv.now;
+let cron = process.env.cron || yargs.argv.cron;
+let timezone = yargs.argv.timezone || process.env.timezone || 'Australia/Melbourne';
+if (now != null) {
   run();
 } else {
   const CronJob = require('cron').CronJob;
   // Run every hour by default.
-  const cronRange = yargs.argv.cron || '00 00 * * * *';
+  const cronRange = cron || '00 00 * * * *';
   const job = new CronJob(cronRange, run,
     true, /* Start the job right now */
-    yargs.argv.timezone || 'Australia/Melbourne'
+    timezone
   );
 }
 
