@@ -10,13 +10,14 @@ const Q = require('q');
 
 let dir = yargs.argv.dir || process.env.dir;
 const uri = yargs.argv.uri || process.env.uri;
+const git = yargs.argv.git || process.env.git;
 
 if (!dir || !fs.lstatSync(dir).isDirectory()) {
   throw new Error('Directory not found');
 }
 if (!fs.lstatSync(path.join(dir, '.git')).isDirectory()) {
   child_process('cd ' + dir);
-  child_process('git clone ' + uri);
+  child_process('git clone ' + git);
 //   throw new Error('Directory must be a Git repo');
 }
 dir = path.resolve(__dirname, dir);
