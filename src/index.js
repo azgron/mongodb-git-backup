@@ -15,10 +15,14 @@ const git = yargs.argv.git || process.env.git;
 if (!dir || !fs.lstatSync(dir).isDirectory()) {
   throw new Error('Directory not found');
 }
-  child_process('cd ' + dir + '; git clone ' + git);
-// if (!fs.lstatSync(path.join(dir, '.git')).isDirectory()) {
-//   throw new Error('Directory must be a Git repo');
-// }
+gitInit(dir, git);
+
+function gitInit(d, g) {
+  log('Git clone...');
+  const df = Q.defer();
+  return Q.ninvoke(child_process, 'exec', `cd ${d}; git clone ${g}`, {});
+}
+
 dir = path.resolve(__dirname, dir);
 log('Backing up MongoDB to directory:', dir);
 
