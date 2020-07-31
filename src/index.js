@@ -9,16 +9,19 @@ const readdir = require('recursive-readdir');
 const Q = require('q');
 
 let dir = yargs.argv.dir || process.env.dir;
+const uri = yargs.argv.uri || process.env.uri;
+
 if (!dir || !fs.lstatSync(dir).isDirectory()) {
   throw new Error('Directory not found');
 }
 if (!fs.lstatSync(path.join(dir, '.git')).isDirectory()) {
-  throw new Error('Directory must be a Git repo');
+  child_process('cd ' + dir);
+  child_process('git clone ' + uri);
+//   throw new Error('Directory must be a Git repo');
 }
 dir = path.resolve(__dirname, dir);
 log('Backing up MongoDB to directory:', dir);
 
-const uri = yargs.argv.uri || process.env.uri;
 if (!uri) {
   throw new Error('No MongoDB URI provided');
 }
