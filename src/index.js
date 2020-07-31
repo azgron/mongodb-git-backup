@@ -29,8 +29,7 @@ log('Backing up MongoDB to directory:', dir);
 if (!uri) {
   throw new Error('No MongoDB URI provided');
 }
-const uriInfo = getUriInfo(uri);
-console.log(`Parsed URI: ${JSON.stringify(uriInfo)}`);
+console.log(`Parsed URI: ${uri}`);
 
 let runDf;
 
@@ -122,18 +121,6 @@ function getDirectories(srcpath) {
   return fs.readdirSync(srcpath).filter(function(file) {
     return fs.statSync(path.join(srcpath, file)).isDirectory();
   });
-}
-
-function getUriInfo(uri) {
-  const RE_URI = /mongodb:\/\/(?:(\w+)(:[^@]+)?@)?(\w+)(:\d+)?\/([^\/]+)/;
-  const match = uri.match(RE_URI);
-  return {
-    host: match[3],
-    port: match[4] != null ? stripColonPrefix(match[4]) : '',
-    username: match[1] || '',
-    password: match[2] != null ? stripColonPrefix(match[2]) : '',
-    db: match[5],
-  }
 }
 
 function stripColonPrefix(str) {
