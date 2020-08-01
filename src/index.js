@@ -19,8 +19,16 @@ gitInit(dir, git);
 
 function gitInit(d, g) {
   log('Git clone...');
-  const df = Q.defer();
-  return Q.ninvoke(child_process, 'exec', `cd ${d}; git clone ${g}`, {});
+  // const USER = 'something';
+  // const PASS = 'somewhere';
+  // const REPO = 'github.com/username/private-repo';
+  // const remote = `https://${USER}:${PASS}@${REPO}`;
+   
+  const git = require('simple-git');
+  git(dir)
+    .clone(git)
+    .then(() => console.log('finished'))
+    .catch((err) => console.error('failed: ', err));
 }
 
 dir = path.resolve(__dirname, dir);
