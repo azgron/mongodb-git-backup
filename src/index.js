@@ -40,6 +40,7 @@ if (!uri) {
 console.log(`Parsed URI: ${uri}`);
 
 let runDf;
+run();
 
 // Allow running the processs immediately without scheduling.
 let now = process.env.now || yargs.argv.now;
