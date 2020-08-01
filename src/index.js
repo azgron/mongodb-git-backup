@@ -28,7 +28,6 @@ function gitInit(d, g) {
   git(dir)
     .clone(git)
     .then(() => console.log('finished'))
-    .catch((err) => console.error('failed: ', err));
 }
 
 dir = path.resolve(__dirname, dir);
@@ -40,7 +39,7 @@ if (!uri) {
 console.log(`Parsed URI: ${uri}`);
 
 let runDf;
-run();
+
 
 // Allow running the processs immediately without scheduling.
 let now = process.env.now || yargs.argv.now;
