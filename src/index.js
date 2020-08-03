@@ -27,8 +27,8 @@ function init() {
   }
   console.log(`Parsed URI: ${uri}`);
 
-  gitInit();
   run();
+  gitInit();
   initCron();
 }
 
@@ -49,12 +49,14 @@ function gitInit(d, g) {
   // const REPO = 'github.com/username/private-repo';
   // const remote = `https://${USER}:${PASS}@${REPO}`;
 
-  runDf = Q.defer();
-  runDf.resolve(
-    deleteFiles(dir)
-    .then(simpleGit(`${dir}/`)
-      .clone(git))
-  );
+  simpleGit(`${dir}/`)
+  .clone(git)
+
+  // runDf = Q.defer();
+  // runDf.resolve(
+  //   deleteFiles(dir)
+  //   .then()
+  // );
 }
 
 function run() {
