@@ -48,19 +48,21 @@ function gitInit(d, g) {
   // const PASS = 'somewhere';
   // const REPO = 'github.com/username/private-repo';
   // const remote = `https://${USER}:${PASS}@${REPO}`;
-   
-  simpleGit(dir)
-    .clone(git)
-    .then(() => console.log('finished'))
+
+  runDf = Q.defer();
+  runDf.resolve(
+    deleteFiles(dir)
+    .then(simpleGit(`${dir}/`)
+      .clone(git))
+  );
 }
 
 function run() {
-  // Prevent running if previous run is incomplete.
   if (runDf && runDf.promise && Q.isPending(runDf.promise)) return;
 
   runDf = Q.defer();
   runDf.resolve(deleteFiles(dir).then(backup).then(push));
-  runDf.promise.catch(function(err) {
+  runDf.promise.catch(function (err) {
     console.error(err, err.stack);
   }).done();
 }
@@ -73,7 +75,8 @@ function backup() {
     root: dir,
     callback: (err, result) => {
       if (err) {
-        log('Error during backup', err);
+        // log('Error during backup', err);
+        console.log(err);
         df.reject(err);
       } else {
         log('Backup successful', result);
@@ -85,24 +88,24 @@ function backup() {
 }
 
 function push() {
-  log('Adding to Git...');
+  log(`Adding to Git: ${dir}/*`);
   const df = Q.defer();
 
   function callback(err, result) {
     if (err) df.reject(err);
   }
 
-  simpleGit(dir)
-    .add(`${dir}/*`, callback)
-    .then(function() {
+  simpleGit(`${dir}/*`)
+    .add(dir, callback)
+    .then(function () {
       log('Committing...');
     })
     .commit('Update', callback)
-    .then(function() {
+    .then(function () {
       log('Pushing...');
     })
     .push('origin', 'master', callback)
-    .then(function() {
+    .then(function () {
       log('Pushed to Git');
       df.resolve();
     });
@@ -113,11 +116,11 @@ function deleteFiles(dir) {
   log('Deleting existing files...');
   const df = Q.defer();
 
-  // Exclude hidden directories (e.g. git).
-  const dbDir = path.join(dir, '/urban');
-  log('Deleting directory:', dbDir);
+  // Exclude hidden directories (e.g. git). 
+  // const dbDir = path.join(dir, '/*');
+  log('Deleting directory:', dir);
 
-  return Q.ninvoke(child_process, 'exec', `rm -rf ${dbDir}`, {});
+  return Q.ninvoke(child_process, 'exec', `rm -rf ${dir}/*`, {});
 }
 
 function log() {
